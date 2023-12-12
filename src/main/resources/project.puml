@@ -1,0 +1,36 @@
+@startuml
+!define ENTITY class
+
+ENTITY User {
+  +id: Long
+  +username: String
+  +password: String
+  +email: String
+  +role: Role
+  +profileImage: byte[]
+}
+
+ENTITY Event {
+  +id: Long
+  +name: String
+  +date: Date
+  +location: String
+  +description: String
+  +image: byte[]
+}
+
+ENTITY Ticket {
+  +id: Long
+  +type: String
+  +price: BigDecimal
+}
+
+ENTITY Role {
+  enum
+  USER
+  ADMIN
+}
+
+User --|{ Event: participants
+Event }o-- Ticket: has
+@enduml
