@@ -29,6 +29,7 @@ public class UserEntity {
     private String email;
 
     @Column(nullable = false, name = "role")
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Column(name = "profile_image")
@@ -42,4 +43,9 @@ public class UserEntity {
     )
     private Set<EventEntity> events = new HashSet<>();
 
+
+    @PrePersist
+    public void init() {
+        this.role = Role.USER;
+    }
 }
