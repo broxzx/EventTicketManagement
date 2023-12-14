@@ -15,21 +15,27 @@ import org.springframework.security.web.SecurityFilterChain;
 @AllArgsConstructor
 public class SecurityConfigurer {
 
-    UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(formLogin -> formLogin.loginPage("/login").permitAll()
-                        .successForwardUrl("/api/"))
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/login").permitAll()
+                        .defaultSuccessUrl("/api/"))
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers("/registration").permitAll()
-                        .requestMatchers("/api/").authenticated())
-                .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedHandler((request, response, accessDeniedException) -> {
-                    response.sendRedirect("/login");
-                }))
-                .logout(logout -> logout.logoutUrl("/logout"))
+                        .requestMatchers("/api/**").authenticated())
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendRedirect("/login");
+                        })
+                )
+                .logout(logout -> logout
+                        .permitAll()
+                        .logoutUrl("/logout")
+                )
                 .build();
     }
 
@@ -46,4 +52,4 @@ public class SecurityConfigurer {
 
         return daoAuthenticationProvider;
     }
- }
+}

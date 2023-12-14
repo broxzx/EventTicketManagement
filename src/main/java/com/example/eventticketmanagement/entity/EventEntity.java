@@ -5,10 +5,7 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,7 +25,7 @@ public class EventEntity {
 
     @Column(name = "created_at", nullable = false)
     @Temporal(TemporalType.DATE)
-    private Date createdAt;
+    private Date startsAt;
 
     @Column(name = "venue", nullable = false)
     private String venue;
@@ -49,7 +46,7 @@ public class EventEntity {
 
     @PrePersist
     public void init() { // TODO: нужно ли оно тут, или переместить в DTO?
-        createdAt = new Date();
+        startsAt = new Date();
     }
 
 
@@ -58,6 +55,7 @@ public class EventEntity {
             try {
                 this.image = file.getBytes();
             } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

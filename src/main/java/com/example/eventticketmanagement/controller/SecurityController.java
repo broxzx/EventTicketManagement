@@ -20,6 +20,7 @@ public class SecurityController {
         return "loginPage";
     }
 
+
     @GetMapping("/registration")
     public String getRegistrationPage(Model model) {
         model.addAttribute("userEntity", new UserEntity());
@@ -32,4 +33,5 @@ public class SecurityController {
 
         return "redirect:/login";
     }
+
 }
