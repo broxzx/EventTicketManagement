@@ -25,8 +25,8 @@ public class SecurityConfigurer {
                         .loginPage("/login").permitAll()
                         .defaultSuccessUrl("/api/"))
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/registration").permitAll()
-                        .requestMatchers("/api/**").authenticated())
+                        .requestMatchers("/api/**").authenticated()
+                        .anyRequest().permitAll())
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.sendRedirect("/login");

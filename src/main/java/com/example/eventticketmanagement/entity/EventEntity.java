@@ -12,6 +12,7 @@ import java.util.*;
 @Getter
 @Setter
 @ToString
+@Builder
 @Entity
 @Table(name = "event")
 public class EventEntity {
@@ -31,7 +32,6 @@ public class EventEntity {
     private String venue;
 
     @Column(nullable = false, name = "description")
-    @Lob
     private String description;
 
     @Lob
@@ -43,11 +43,6 @@ public class EventEntity {
 
     @ManyToMany(mappedBy = "events")
     private Set<UserEntity> participants = new HashSet<>();
-
-    @PrePersist
-    public void init() { // TODO: нужно ли оно тут, или переместить в DTO?
-        startsAt = new Date();
-    }
 
 
     public void setImageFromMultipartFile(MultipartFile file) {

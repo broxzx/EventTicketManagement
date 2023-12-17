@@ -10,7 +10,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class EventDto {
 
-    @NonNull
     private Long id;
 
     @NonNull
