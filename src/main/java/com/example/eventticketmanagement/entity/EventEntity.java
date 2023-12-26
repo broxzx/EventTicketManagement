@@ -54,4 +54,8 @@ public class EventEntity {
             }
         }
     }
+
+    public void addTicketToEvent(TicketEntity ticketEntity) {
+        this.listOfTickets.add(ticketEntity);
+    }
 }

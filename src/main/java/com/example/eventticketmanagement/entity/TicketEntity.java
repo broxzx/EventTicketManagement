@@ -9,6 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
+@Builder
 @Table(name = "ticket")
 public class TicketEntity {
 

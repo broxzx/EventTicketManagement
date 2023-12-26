@@ -7,7 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TicketDto {
-    @NonNull
     private Long id;
 
     @NonNull

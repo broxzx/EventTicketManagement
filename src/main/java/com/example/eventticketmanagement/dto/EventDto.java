@@ -21,6 +21,7 @@ public class EventDto {
     @NonNull
     private String venue;
 
+    @NonNull
     private String description;
 
     private byte[] image;
