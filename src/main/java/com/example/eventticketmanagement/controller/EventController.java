@@ -23,9 +23,9 @@ public class EventController {
     private final EventRepository eventRepository;
     private final EventDtoFactory eventDtoFactory;
 
-    private static final String GET_EVENT_BY_ID = "{id}";
-    private static final String UPDATE_EVENT_BY_ID = "{id}";
-    private static final String DELETE_EVENT_BY_ID = "{id}";
+    private static final String GET_EVENT_BY_ID = "{id}/";
+    private static final String UPDATE_EVENT_BY_ID = "{id}/";
+    private static final String DELETE_EVENT_BY_ID = "{id}/";
 
     @GetMapping()
     public List<EventDto> getAllEvents() {
