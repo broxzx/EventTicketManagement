@@ -2,6 +2,7 @@ package com.example.eventticketmanagement.controller;
 
 import com.example.eventticketmanagement.entity.UserEntity;
 import com.example.eventticketmanagement.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +29,7 @@ public class SecurityController {
     }
 
     @PostMapping("/registration")
-    public String createUser(@ModelAttribute(name = "userEntity") UserEntity userEntity) {
+    public String createUser(@ModelAttribute(name = "userEntity") @Valid UserEntity userEntity) {
         userService.saveUser(userEntity);
 
         return "redirect:/login";
