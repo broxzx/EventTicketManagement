@@ -25,4 +25,7 @@ public class TicketEntity {
 
     @ManyToOne
     private EventEntity event;
+
+    @ManyToOne
+    private UserEntity user;
 }

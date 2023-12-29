@@ -1,11 +1,12 @@
 package com.example.eventticketmanagement.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -26,9 +27,11 @@ public class UserEntity {
 
     @Column(nullable = false)
     @NotBlank(message = "Password cannot be empty")
+    @Size(min = 8, message = "password cannot be shorter than 8 symbols")
     private String password;
 
     @Column(unique = true, nullable = false)
+    @Email
     private String email;
 
     @Column(nullable = false, name = "role")
@@ -39,13 +42,9 @@ public class UserEntity {
     @Column(name = "profile_image")
     private byte[] profileImage;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_event",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id")
-    )
-    private Set<EventEntity> events = new HashSet<>();
+    @OneToMany
+    @JoinColumn(name = "ticket_id", referencedColumnName = "id")
+    private List<TicketEntity> listOfTickets;
 
 
     @PrePersist

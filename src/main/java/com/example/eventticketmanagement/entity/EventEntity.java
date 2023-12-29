@@ -39,9 +39,6 @@ public class EventEntity {
     @OneToMany(mappedBy = "event")
     private List<TicketEntity> listOfTickets;
 
-    @ManyToMany(mappedBy = "events")
-    private Set<UserEntity> participants = new HashSet<>();
-
 
     public void addTicketToEvent(TicketEntity ticketEntity) {
         this.listOfTickets.add(ticketEntity);
