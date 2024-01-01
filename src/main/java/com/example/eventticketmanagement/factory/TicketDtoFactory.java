@@ -12,6 +12,7 @@ public class TicketDtoFactory {
                 .id(ticketEntity.getId())
                 .type(ticketEntity.getType())
                 .price(ticketEntity.getPrice())
+                .bought(ticketEntity.getBought())
                 .build();
     }
 }

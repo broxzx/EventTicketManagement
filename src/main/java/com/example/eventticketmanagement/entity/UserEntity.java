@@ -11,9 +11,8 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@EqualsAndHashCode
+@Data
 @Table(name="users")
 public class UserEntity {
 

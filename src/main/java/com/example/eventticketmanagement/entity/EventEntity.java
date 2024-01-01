@@ -7,10 +7,9 @@ import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @ToString
 @Builder
+@Data
 @Entity
 @Table(name = "event")
 public class EventEntity {

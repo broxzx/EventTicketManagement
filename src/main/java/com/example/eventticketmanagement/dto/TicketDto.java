@@ -14,4 +14,7 @@ public class TicketDto {
 
     @NonNull
     private Long price;
+
+    @NonNull
+    private Boolean bought;
 }

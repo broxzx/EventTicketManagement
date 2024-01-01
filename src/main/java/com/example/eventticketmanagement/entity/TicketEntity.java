@@ -6,8 +6,7 @@ import lombok.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @ToString
 @Builder
 @Table(name = "ticket")
@@ -23,9 +22,17 @@ public class TicketEntity {
     @Column(nullable = false)
     private Long price;
 
+    @Column(nullable = false)
+    private Boolean bought;
+
     @ManyToOne
     private EventEntity event;
 
     @ManyToOne
     private UserEntity user;
+
+    @PrePersist
+    private void init() {
+        this.bought = false;
+    }
 }

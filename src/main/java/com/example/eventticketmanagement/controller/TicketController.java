@@ -5,6 +5,7 @@ import com.example.eventticketmanagement.dto.TicketDto;
 import com.example.eventticketmanagement.entity.EventEntity;
 import com.example.eventticketmanagement.entity.TicketEntity;
 import com.example.eventticketmanagement.entity.UserEntity;
+import com.example.eventticketmanagement.exception.TicketWasBoughtException;
 import com.example.eventticketmanagement.exception.TicketWithResourcesNotFound;
 import com.example.eventticketmanagement.exception.UserWithResourceNotFound;
 import com.example.eventticketmanagement.factory.TicketDtoFactory;
@@ -58,7 +59,7 @@ public class TicketController {
     }
 
     @PostMapping(CREATE_TICKET)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@securityService.hasAdminRole()")
     public ResponseEntity<TicketDto> createTicket(@PathVariable Long id, @RequestBody TicketDto ticketDto) {
         EventEntity foundEventEntity = controllerHelper.findEventEntityById(id);
 
@@ -66,6 +67,7 @@ public class TicketController {
                 .type(ticketDto.getType())
                 .event(foundEventEntity)
                 .price(ticketDto.getPrice())
+                .bought(ticketDto.getBought())
                 .build();
 
         foundEventEntity.addTicketToEvent(ticketEntity);
@@ -92,7 +94,7 @@ public class TicketController {
     }
 
     @PutMapping(UPDATE_TICKET_BY_ID)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@securityService.hasAdminRole()")
     public ResponseEntity<TicketDto> updateTicketById(@PathVariable Long eventId, @PathVariable Long ticketId, @RequestBody TicketDto ticketDto) {
         EventEntity foundEventEntity = controllerHelper.findEventEntityById(eventId);
 
@@ -103,17 +105,18 @@ public class TicketController {
                 .filter(ticket -> Objects.equals(ticket.getId(), ticketId))
                 .findFirst()
                 .orElseThrow(
-                        () ->  new TicketWithResourcesNotFound("ticket with id %d was not found".formatted(ticketId))
+                        () -> new TicketWithResourcesNotFound("ticket with id %d was not found".formatted(ticketId))
                 );
 
 
-       ticketEntities.remove(foundTicketEntity);
+        ticketEntities.remove(foundTicketEntity);
 
         TicketEntity ticketEntity = TicketEntity
                 .builder()
                 .id(ticketId)
                 .type(ticketDto.getType())
                 .price(ticketDto.getPrice())
+                .bought(ticketDto.getBought())
                 .event(foundEventEntity)
                 .build();
 
@@ -128,7 +131,7 @@ public class TicketController {
     }
 
     @DeleteMapping(DELETE_TICKET_BY_ID)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@securityService.hasAdminRole()")
     public ResponseEntity<Void> deleteTicketById(@PathVariable Long eventId, @PathVariable Long ticketId) {
         EventEntity eventEntity = controllerHelper.findEventEntityById(eventId);
 
@@ -139,7 +142,7 @@ public class TicketController {
                 .filter(ticket -> Objects.equals(ticket.getId(), eventId))
                 .findFirst()
                 .orElseThrow(
-                        () ->  new TicketWithResourcesNotFound("ticket with id %d was not found".formatted(ticketId))
+                        () -> new TicketWithResourcesNotFound("ticket with id %d was not found".formatted(ticketId))
                 );
 
         ticketEntityList.remove(foundTicketEntity);
@@ -165,11 +168,28 @@ public class TicketController {
                         () -> new TicketWithResourcesNotFound("ticket with id %d was not found".formatted(ticketId))
                 );
 
+        if (ticketEntity.getBought()) {
+            throw new TicketWasBoughtException("ticket with id %d is already bought".formatted(ticketId));
+        }
+
         List<TicketEntity> ticketEntities = foundUser.getListOfTickets();
+
+        int index = ticketEntities.indexOf(ticketEntity);
+
+        if (index != -1) {
+            ticketEntities.get(index).setBought(true);
+            foundUser.setListOfTickets(ticketEntities);
+            userRepository.save(foundUser);
+        } else {
+            throw new TicketWithResourcesNotFound("Ticket with id %d was not found in the user's tickets".formatted(ticketId));
+        }
+
 
         ticketEntities.add(ticketEntity);
 
         foundUser.setListOfTickets(ticketEntities);
+
+        userRepository.save(foundUser);
 
         return ResponseEntity.status(HttpStatus.OK).body("ticket with id %d was successfully bought".formatted(ticketId));
     }

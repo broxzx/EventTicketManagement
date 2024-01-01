@@ -4,7 +4,6 @@ import com.example.eventticketmanagement.controller.helper.ControllerHelper;
 import com.example.eventticketmanagement.dto.EventDto;
 import com.example.eventticketmanagement.entity.EventEntity;
 import com.example.eventticketmanagement.exception.EventWithResourceNotFound;
-import com.example.eventticketmanagement.exception.LoggingException;
 import com.example.eventticketmanagement.factory.EventDtoFactory;
 import com.example.eventticketmanagement.repository.EventRepository;
 import jakarta.transaction.Transactional;
@@ -12,13 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,14 +49,9 @@ public class EventController {
     }
 
 
-    //TODO: to finish with this class
     @PostMapping
+    @PreAuthorize("@securityService.hasAdminRole()")
     public ResponseEntity<EventDto> createEvent(@RequestBody EventDto eventDto) {
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-
-        if (!authorities.contains(new SimpleGrantedAuthority("ADMIN"))) {
-            throw new LoggingException("you do not have access");
-        }
 
         EventEntity eventEntity = EventEntity.builder()
                 .eventName(eventDto.getEventName())
@@ -78,7 +68,7 @@ public class EventController {
     }
 
     @PutMapping(UPDATE_EVENT_BY_ID)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@securityService.hasAdminRole()")
     public ResponseEntity<EventDto> updateEventById(@PathVariable Long id, @RequestBody EventDto eventDto) {
         EventEntity foundEventEntity = controllerHelper.findEventEntityById(id);
 
@@ -94,7 +84,7 @@ public class EventController {
     }
 
     @DeleteMapping(DELETE_EVENT_BY_ID)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@securityService.hasAdminRole()")
     public ResponseEntity<Void> deleteEventById(@PathVariable Long id) {
         Optional<EventEntity> eventEntity = eventRepository.findById(id);
 
@@ -108,7 +98,7 @@ public class EventController {
     }
 
     @PostMapping(UPLOAD_IMAGE_TO_EVENT)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("@securityService.hasAdminRole()")
     public ResponseEntity<String> uploadImageToEvent(@PathVariable Long id, @RequestBody MultipartFile file) {
         EventEntity eventEntity = controllerHelper.findEventEntityById(id);
 

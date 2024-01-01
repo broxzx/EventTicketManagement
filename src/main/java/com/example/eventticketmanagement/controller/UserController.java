@@ -36,7 +36,7 @@ public class UserController {
 
 
     @GetMapping(GET_USER_BY_ID)
-    @PostAuthorize("returnObject.body.username == principal.username")
+    @PostAuthorize("returnObject.body.username == principal.username or hasRole('ADMIN')")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         UserEntity foundUserEntity = userRepository.findById(id)
                 .orElseThrow(
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping(UPDATE_USER_BY_ID)
-    @PostAuthorize("returnObject.body.username == principal.username")
+    @PostAuthorize("returnObject.body.username == principal.username or hasRole('ADMIN')")
     public ResponseEntity<UserDto> updateUserEntityById(@PathVariable Long id, @RequestBody UserDto userDto) {
         UserEntity foundUserEntity = userRepository.findById(id)
                 .orElseThrow(
@@ -71,7 +71,7 @@ public class UserController {
     }
 
     @PostMapping(UPLOAD_USER_IMAGE_BY_ID)
-    @PreAuthorize("@securityService.canAccessUser(principal, #id)")
+    @PreAuthorize("@securityService.canAccessUser(principal, #id) or hasRole('ADMIN')")
     public ResponseEntity<String> uploadImageByUserId(@PathVariable Long id, @RequestBody MultipartFile file) {
         UserEntity foundUserEntity = userRepository.findById(id)
                 .orElseThrow(
@@ -98,7 +98,7 @@ public class UserController {
     }
 
     @GetMapping(GET_TICKETS_BY_USER_ID)
-    @PreAuthorize("@securityService.canAccessUser(principal, #id)")
+    @PreAuthorize("@securityService.canAccessUser(principal, #id) or hasRole('ADMIN')")
     public List<TicketDto> getTicketsByUserId(@PathVariable Long id) {
 
         UserEntity user = userRepository.findById(id)
