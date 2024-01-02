@@ -14,6 +14,7 @@ import com.example.eventticketmanagement.repository.TicketRepository;
 import com.example.eventticketmanagement.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +38,7 @@ public class TicketController {
     private final UserRepository userRepository;
 
     private static final String CREATE_TICKET = "{id}/ticket/";
-    private static final String GET_ALL_TICKETS_BY_EVENT_ID = "{id}/ticket/";
+    private static final String GET_ALL_TICKETS_BY_EVENT_ID = "{id}/ticket";
     private static final String GET_TICKET_BY_ID = "{eventId}/ticket/{ticketId}/";
     private static final String UPDATE_TICKET_BY_ID = "{eventId}/ticket/{ticketId}/";
     private static final String DELETE_TICKET_BY_ID = "{eventId}/ticket/{ticketId}/";
@@ -58,6 +59,33 @@ public class TicketController {
         throw new TicketWithResourcesNotFound("ticket with id %d was not found".formatted(ticketId));
     }
 
+    @GetMapping(GET_ALL_TICKETS_BY_EVENT_ID)
+    public List<TicketDto> getAllTicketsByEventId(@PathVariable Long id, @RequestParam(required = false) String sortedBy) {
+        Sort sort = null;
+
+        if (sortedBy != null && !sortedBy.isBlank()) {
+            sort = Sort.by(sortedBy);
+            List<TicketEntity> sortedTicketList = ticketRepository.getAllTicketsByUserId(id, sort);
+
+            return sortedTicketList.stream()
+                    .map(ticketDtoFactory::makeTicketDto)
+                    .toList();
+        }
+
+        EventEntity foundEventEntity = controllerHelper.findEventEntityById(id);
+
+        List<TicketEntity> foundTicketEntities = foundEventEntity.getListOfTickets();
+
+        List<TicketDto> ticketDtos = new ArrayList<>();
+
+        for (TicketEntity ticketEntity : foundTicketEntities) {
+            TicketDto ticketDto = ticketDtoFactory.makeTicketDto(ticketEntity);
+            ticketDtos.add(ticketDto);
+        }
+
+        return ticketDtos;
+    }
+
     @PostMapping(CREATE_TICKET)
     @PreAuthorize("@securityService.hasAdminRole()")
     public ResponseEntity<TicketDto> createTicket(@PathVariable Long id, @RequestBody TicketDto ticketDto) {
@@ -75,22 +103,6 @@ public class TicketController {
         ticketRepository.save(ticketEntity);
 
         return ResponseEntity.status(HttpStatus.OK).body(ticketDto);
-    }
-
-    @GetMapping(GET_ALL_TICKETS_BY_EVENT_ID)
-    public List<TicketDto> getAllTicketsByEventId(@PathVariable Long id) {
-        EventEntity foundEventEntity = controllerHelper.findEventEntityById(id);
-
-        List<TicketEntity> foundTicketEntities = foundEventEntity.getListOfTickets();
-
-        List<TicketDto> ticketDtos = new ArrayList<>();
-
-        for (TicketEntity ticketEntity : foundTicketEntities) {
-            TicketDto ticketDto = ticketDtoFactory.makeTicketDto(ticketEntity);
-            ticketDtos.add(ticketDto);
-        }
-
-        return ticketDtos;
     }
 
     @PutMapping(UPDATE_TICKET_BY_ID)
