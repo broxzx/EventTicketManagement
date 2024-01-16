@@ -1,24 +1,17 @@
 package com.example.eventticketmanagement;
 
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class EventTicketManagementApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(EventTicketManagementApplication.class, args);
+        new SpringApplicationBuilder()
+                .bannerMode(Banner.Mode.OFF)
+                .sources(EventTicketManagementApplication.class)
+                .run();
     }
-
-//    @Bean(name = "multipartResolver")
-//    public MultipartResolver multipartResolver() {
-//        StandardServletMultipartResolver resolver = new StandardServletMultipartResolver();
-//        resolver.(5 * 1024 * 1024); // 5 MB
-//        resolver.setMaxRequestSize(5 * 1024 * 1024); // 5 MB
-//        return resolver;
-//    }
 
 }

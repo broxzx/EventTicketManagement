@@ -30,9 +30,7 @@ public class SecurityConfigurer {
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll())
                 .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.sendRedirect("/login");
-                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> response.sendRedirect("/login"))
                 )
                 .logout(logout -> logout
                         .permitAll()
@@ -54,4 +52,5 @@ public class SecurityConfigurer {
 
         return daoAuthenticationProvider;
     }
+
 }
