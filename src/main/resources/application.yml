@@ -1,5 +1,6 @@
 server:
-  port: 8080
+  port: 8081
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/EventTicketManagement
@@ -14,3 +15,7 @@ spring:
     redis:
       port: 6379
       host: localhost
+
+jwt:
+  secret: 984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf
+  expirationTime: 10m

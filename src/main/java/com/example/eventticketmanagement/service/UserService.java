@@ -22,9 +22,9 @@ public class UserService {
     }
 
 
-    public void saveUser(UserEntity user) {
+    public UserEntity saveUser(UserEntity user) {
         user.setPassword(encoder.encode(user.getPassword()));
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public UserEntity findByUsername(String username) {
