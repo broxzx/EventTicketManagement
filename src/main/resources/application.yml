@@ -17,5 +17,5 @@ spring:
       host: localhost
 
 jwt:
-  secret: 984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf
+  secret: fb08df24190dfa6e907175d9337922bdea392efb763cb7b41eb75f2ae9904ce8
   expirationTime: 10m

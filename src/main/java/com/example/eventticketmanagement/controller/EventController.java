@@ -32,7 +32,7 @@ public class EventController {
     private static final String DELETE_EVENT_BY_ID = "{id}/";
     private static final String UPLOAD_IMAGE_TO_EVENT = "{id}/uploadImage";
 
-    @GetMapping()
+    @GetMapping
     public List<EventDto> getAllEvents() {
         List<EventEntity> allEventEntities = eventRepository.findAll();
 
